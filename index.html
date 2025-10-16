@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Xbox 360 Controller</title>
+    <style>
+        :root {
+            --bg-color: #1e1e1e;
+            --text-color: #f0f0f0;
+            --button-bg: #4CAF50;
+            --button-hover-bg: #45a049;
+            --controller-bg: #f5f5f5;
+            --controller-shadow: rgba(0,0,0,0.2);
+            --controller-dark-grey: #555;
+            --controller-light-grey: #777;
+            --green-button: #A2CD3A;
+            --red-button: #E63F28;
+            --blue-button: #3E83C1;
+            --yellow-button: #F8B600;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        p {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #aaa;
+        }
+
+        #controller-container {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 20px;
+        }
+
+        #controller-svg {
+            width: 100%;
+            height: auto;
+            filter: drop-shadow(0 4px 8px var(--controller-shadow));
+        }
+
+        .controller-part {
+            cursor: pointer;
+            transition: transform 0.1s ease-out, filter 0.1s ease-out;
+        }
+
+        .controller-part:active {
+            transform: scale(0.95);
+            filter: brightness(0.8);
+        }
+
+        #feedback {
+            min-height: 2em;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: var(--button-bg);
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: var(--button-bg);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: var(--button-hover-bg);
+        }
+
+        #svg-code-container {
+            display: none;
+            width: 100%;
+            max-width: 600px;
+            margin-top: 20px;
+        }
+
+        #svg-code-block {
+            background-color: #2d2d2d;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: left;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 40vh;
+            overflow-y: auto;
+            font-family: "Courier New", Courier, monospace;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Interactive SVG Controller</h1>
+    <p>Tap the buttons on the controller!</p>
+
+    <div id="controller-container">
+        <!-- SVG of Xbox 360 Controller -->
+        <svg id="controller-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 360">
+            <defs>
+                <radialGradient id="guide-gradient" cx="50%" cy="50%" r="50%" fx="25%" fy="25%">
+                    <stop offset="0%" style="stop-color:#ffffff; stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#c0c0c0; stop-opacity:1" />
+                </radialGradient>
+            </defs>
+            <!-- Main Body -->
+            <path d="M 50,150 
+                     A 80,80 0 0,1 150,80 
+                     L 180,80 
+                     C 190,40 210,40 220,80 
+                     L 280,80 
+                     C 290,40 310,40 320,80 
+                     L 350,80 
+                     A 80,80 0 0,1 450,150 
+                     A 80,100 0 0,1 360,240 
+                     L 140,240 
+                     A 80,100 0 0,1 50,150 Z" 
+                  fill="#EAEAEA" stroke="#333" stroke-width="2"/>
+            
+            <!-- Top middle part -->
+            <path d="M 190,82 
+                     C 195,50 210,50 215,82 
+                     L 285,82 
+                     C 290,50 305,50 310,82 Z" fill="#999"/>
+            <rect x="220" y="60" width="60" height="22" rx="5" fill="#777" />
+            
+            <!-- D-Pad -->
+            <g id="d-pad" class="controller-part">
+                <rect x="110" y="155" width="20" height="50" rx="3" fill="#777"/>
+                <rect x="95" y="170" width="50" height="20" rx="3" fill="#777"/>
+                <circle cx="120" cy="180" r="12" fill="#555"/>
+            </g>
+            
+            <!-- Left Stick -->
+            <g id="left-stick" class="controller-part">
+                <circle cx="170" cy="200" r="28" fill="#777"/>
+                <circle cx="170" cy="200" r="23" fill="#555" stroke="#444" stroke-width="2"/>
+            </g>
+
+            <!-- Back and Start Buttons -->
+            <g id="back-button" class="controller-part">
+                <circle cx="215" cy="180" r="8" fill="#777"/>
+                <path d="M 211,180 h 8 M 213,176 l 4,8" fill="none" stroke="#ccc" stroke-width="1.5" stroke-linecap="round"/>
+            </g>
+            <g id="start-button" class="controller-part">
+                <circle cx="285" cy="180" r="8" fill="#777"/>
+                <path d="M 282,176 l 6,4 -6,4 z" fill="#ccc"/>
+            </g>
+            
+            <!-- Guide Button -->
+            <g id="guide-button" class="controller-part">
+                <circle cx="250" cy="130" r="20" fill="url(#guide-gradient)"/>
+                <circle cx="250" cy="130" r="18" fill="none" stroke="#333" stroke-width="1"/>
+                <path d="M 242,122 L 258,138 M 242,138 L 258,122" stroke="#6AA84F" stroke-width="4" stroke-linecap="round"/>
+            </g>
+            
+            <!-- ABXY Buttons -->
+            <g id="abxy-buttons">
+                <g id="y-button" class="controller-part">
+                    <circle cx="340" cy="130" r="12" fill="var(--yellow-button)"/>
+                    <text x="340" y="135" font-size="14" fill="white" text-anchor="middle" font-weight="bold">Y</text>
+                </g>
+                <g id="x-button" class="controller-part">
+                    <circle cx="310" cy="160" r="12" fill="var(--blue-button)"/>
+                    <text x="310" y="165" font-size="14" fill="white" text-anchor="middle" font-weight="bold">X</text>
+                </g>
+                <g id="b-button" class="controller-part">
+                    <circle cx="370" cy="160" r="12" fill="var(--red-button)"/>
+                    <text x="370" y="165" font-size="14" fill="white" text-anchor="middle" font-weight="bold">B</text>
+                </g>
+                <g id="a-button" class="controller-part">
+                    <circle cx="340" cy="190" r="12" fill="var(--green-button)"/>
+                    <text x="340" y="195" font-size="14" fill="white" text-anchor="middle" font-weight="bold">A</text>
+                </g>
+            </g>
+
+            <!-- Right Stick -->
+            <g id="right-stick" class="controller-part">
+                <circle cx="285" cy="225" r="28" fill="#777"/>
+                <circle cx="285" cy="225" r="23" fill="#555" stroke="#444" stroke-width="2"/>
+            </g>
+        </svg>
+    </div>
+
+    <div id="feedback">Press a button</div>
+
+    <button id="toggle-code-btn">View SVG Code</button>
+
+    <div id="svg-code-container">
+        <pre><code id="svg-code-block"></code></pre>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const controllerParts = document.querySelectorAll('.controller-part');
+            const feedbackEl = document.getElementById('feedback');
+            const toggleCodeBtn = document.getElementById('toggle-code-btn');
+            const svgCodeContainer = document.getElementById('svg-code-container');
+            const svgCodeBlock = document.getElementById('svg-code-block');
+            const controllerSvg = document.getElementById('controller-svg');
+
+            // --- Interactivity ---
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+            function playSound() {
+                if (audioContext.state === 'suspended') {
+                    audioContext.resume();
+                }
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
+                gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+
+                gainNode.gain.exponentialRampToValueAtTime(0.00001, audioContext.currentTime + 0.5);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            }
+
+            const partNames = {
+                'd-pad': 'D-Pad',
+                'left-stick': 'Left Stick',
+                'right-stick': 'Right Stick',
+                'back-button': 'Back Button',
+                'start-button': 'Start Button',
+                'guide-button': 'Guide Button',
+                'y-button': 'Y Button',
+                'x-button': 'X Button',
+                'b-button': 'B Button',
+                'a-button': 'A Button',
+            };
+
+            controllerParts.forEach(part => {
+                const handleInteraction = (event) => {
+                    event.preventDefault();
+                    const partName = partNames[part.id] || part.id;
+                    feedbackEl.textContent = `${partName} pressed!`;
+                    playSound();
+                };
+
+                // Add both mouse and touch events for better mobile support
+                part.addEventListener('mousedown', handleInteraction);
+                part.addEventListener('touchstart', handleInteraction);
+            });
+
+            // --- View Code Functionality ---
+            toggleCodeBtn.addEventListener('click', () => {
+                const isHidden = svgCodeContainer.style.display === 'none';
+                if (isHidden) {
+                    const svgString = new XMLSerializer().serializeToString(controllerSvg);
+                    const formattedSvgString = svgString.replace(/></g, '>\n<');
+                    svgCodeBlock.textContent = formattedSvgString;
+                    svgCodeContainer.style.display = 'block';
+                    toggleCodeBtn.textContent = 'Hide SVG Code';
+                } else {
+                    svgCodeContainer.style.display = 'none';
+                    toggleCodeBtn.textContent = 'View SVG Code';
+                }
+            });
+
+        });
+    </script>
+
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4c6229722a6346bc8eb5cb0e5eae5d41","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>
+
